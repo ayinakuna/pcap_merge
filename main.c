@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
 	Header.Minor		= PCAPHEADER_MINOR;
 	Header.TimeZone		= 0; 
 	Header.SigFlag		= 0; 
-	Header.SnapLen		= 16*1024; 
+	Header.SnapLen		= 65535; 
 	Header.Link			= PCAPHEADER_LINK_ETHERNET; 
 	fwrite(&Header, 1, sizeof(Header), OutFile);	
 
@@ -286,7 +286,7 @@ int main(int argc, char* argv[])
 		InFile->BufferPos += Packet->LengthCapture; 
 
 		assert(Packet->LengthCapture > 0);
-		assert(Packet->LengthCapture < 16*1024);
+		assert(Packet->LengthCapture < 65535);
 
 		InFile->BufferValid = false;
 		TotalBytes += Packet->LengthCapture + sizeof(PCAPPacket_t);
