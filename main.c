@@ -147,8 +147,8 @@ int main(int argc, char* argv[])
 			InFileList[InFileCnt++].FileName = strdup(argv[i]);
 			if (InFileCnt > 2048)
 			{
-				printf("too many input files\n");
-				exit(0);
+				fprintf(stderr, "too many input files\n");
+				exit(2);			
 			}
 		}
 	}
@@ -169,8 +169,8 @@ int main(int argc, char* argv[])
 		InFile->fd = open64(InFile->FileName, O_RDONLY);
 		if (InFile->fd < 0)
 		{
-			printf("failed to open file [%s]\n", InFile->FileName);
-			continue;
+			fprintf(stderr, "failed to open file [%s]\n", InFile->FileName);
+			exit(2);			
 		}
 
 		printf("Input [%s] %10.3fGB\n", InFile->FileName, InFile->FileLength / 1e9);
@@ -180,8 +180,8 @@ int main(int argc, char* argv[])
 		InFile->Map = mmap64(0, InFile->MapLength, PROT_READ, MAP_SHARED, InFile->fd, 0); 
 		if (InFile->Map == (u8*)-1)
 		{
-			printf("failed to map File [%s]\n", InFile->FileName);
-			return 0;
+			fprintf(stderr, "failed to map File [%s]\n", InFile->FileName);
+			exit(2);			
 		}
 
 		// read pcap header in first
@@ -210,8 +210,8 @@ int main(int argc, char* argv[])
 	FILE* OutFile = fopen(OutFileName, "w");
 	if (!OutFile)
 	{
-		printf("OutputFilename is invalid [%s]\n", OutFileName);
-		return 0;
+		fprintf(stderr, "OutputFilename is invalid [%s]\n", OutFileName);
+		exit(2);			
 	}	
 	PCAPHeader_t	Header;
 	Header.Magic		= PCAPHEADER_MAGIC_NANO;
@@ -278,8 +278,8 @@ int main(int argc, char* argv[])
 		wlen = fwrite(Packet, sizeof(PCAPPacket_t) + Packet->LengthCapture, 1, OutFile); 
 		if (wlen != 1)
 		{
-			printf("write failed\n");
-			break;
+			fprintf(stderr, "write failed\n");
+			exit(2);
 		}
 
 		InFile->BufferPos += sizeof(PCAPPacket_t);
